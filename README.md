@@ -9,6 +9,7 @@ A ruby client of the Elibom REST API. [The full API documentation is here](http:
 1\. Install the gem
 
 ```ruby
+gem install json
 gem install elibom
 ```
 
