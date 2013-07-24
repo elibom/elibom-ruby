@@ -2,6 +2,7 @@ require 'net/http'
 require 'net/https'
 require 'json'
 
+# Ruby client of the Elibom API
 module Elibom
 
   class Client
@@ -28,11 +29,13 @@ module Elibom
     end
 
     def messages(delivery_id)
+      raise ArgumentError, "'delivery_id' cannot be nil or empty" if delivery_id.nil? || delivery_id.empty?
       get "/messages/#{delivery_id}"
     end
     alias :list_messages :messages
 
     def user(user_id)
+      raise ArgumentError, "'user_id' cannot be nil" if user_id.nil?
       get "/users/#{user_id}"
     end
 
