@@ -1,7 +1,7 @@
 Elibom Ruby API Client
 ===========
 
-A ruby client of the Elibom REST API. [The full API documentation is here](http://www.elibom.com/developers/reference).
+A ruby client of the Elibom REST API. [The full API reference is here](http://www.elibom.com/developers/reference).
 
 
 ## Getting Started
@@ -12,7 +12,7 @@ A ruby client of the Elibom REST API. [The full API documentation is here](http:
 gem install elibom
 ```
 
-2\. Create an Elibom client object passing your credentials.
+2\. Create an `Elibom::Client` object passing your credentials.
 
 ```ruby
 elibom = Elibom::Client.new(
@@ -26,25 +26,65 @@ You are now ready to start calling the API methods!
 
 ## API methods
 
-### Send a message
+* [Send SMS](#send-sms)
+* [Schedule SMS](#schedule-sms)
+* [List SMS Messages](#list-sms-message)
+* [List Scheduled SMS Messages](#list-scheduled-sms-messages)
+* [Show Scheduled SMS Message](#show-scheduled-sms-message)
+* [List Users](#list-users)
+* [Show User](#show-user)
+* [Show Account](#show-account)
 
+### Send SMS
 ```ruby
 response = elibom.send_message(
-  :destinations => '51965876567, 573002111111', 
+  :to => '51965876567, 573002111111', 
   :text => 'this is a test'
 )
-puts response["deliveryToken"]
+puts response["deliveryToken"] # all methods return a hash (or nil if there is no response)
 ```
 
-### Query messages
+### Schedule SMS 
+```ruby
+response = elibom.send_message(
+  :to => '51965876567, 573002111111', 
+  :text => 'this is a test',
+  :schedule_date => Time.now + 3600 # in an hour
+)
+puts response["scheduleId"]
+```
 
+### List SMS Messages
 ```ruby
 response = elibom.messages('<delivery_token>')
 puts response
 ```
 
-### Query your account
+### List Scheduled SMS Messages
+```ruby
+response = elibom.schedules
+puts response
+```
 
+### Show Scheduled SMS Message
+```ruby
+response = elibom.schedule(<schedule_id>)
+puts response
+```
+
+### List Users
+```ruby
+response = elibom.users
+puts response
+```
+
+### Show User
+```ruby
+response = elibom.user(<user_id>)
+puts response
+```
+
+### Show Account
 ```ruby
 response = elibom.account
 puts response
