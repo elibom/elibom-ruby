@@ -15,6 +15,8 @@ gem install elibom
 2\. Create an `Elibom::Client` object passing your credentials.
 
 ```ruby
+require 'elibom'
+
 elibom = Elibom::Client.new(
   :user => 'your@user.com', 
   :api_password => 'your_api_password'
