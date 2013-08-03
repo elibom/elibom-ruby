@@ -33,6 +33,7 @@ You are now ready to start calling the API methods!
 * [List SMS Messages](#list-sms-message)
 * [List Scheduled SMS Messages](#list-scheduled-sms-messages)
 * [Show Scheduled SMS Message](#show-scheduled-sms-message)
+* [Cancel Scheduled SMS Message](#cancel-scheduled-sms-message)
 * [List Users](#list-users)
 * [Show User](#show-user)
 * [Show Account](#show-account)
@@ -72,6 +73,11 @@ puts response
 ```ruby
 response = elibom.schedule(<schedule_id>)
 puts response
+```
+
+### Cancel Scheduled SMS Message
+```ruby
+elibom.unschedule(<schedule_id>)
 ```
 
 ### List Users
