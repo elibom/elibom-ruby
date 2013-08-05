@@ -49,7 +49,7 @@ puts response["deliveryToken"] # all methods return a hash (or nil if there is n
 
 ### Schedule SMS 
 ```ruby
-response = elibom.send_message(
+response = elibom.schedule_message(
   :to => '51965876567, 573002111111', 
   :text => 'this is a test',
   :schedule_date => Time.now + 3600 # in an hour
