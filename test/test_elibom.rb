@@ -2,6 +2,8 @@ require 'test/unit'
 require 'elibom'
 
 class ElibomTest < Test::Unit::TestCase
+  HOST_WITH_CREDENTIALS = "https://t%40u.com:test@www.elibom.com"
+
   def test_elibom_client
     elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
     assert elibom.kind_of? Elibom::Client
@@ -20,9 +22,9 @@ class ElibomTest < Test::Unit::TestCase
   end
 
   def test_send_message
-    stub_request(:post, "http://t%40u.com:test@www.elibom.com/messages")
+    stub_request(:post, "#{HOST_WITH_CREDENTIALS}/messages")
         .with(
-          :body => "{\"destinations\":\"573002111111\",\"text\":\"this is a test\"}",
+          :body => "{\"to\":\"573002111111\",\"text\":\"this is a test\"}",
           :headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
         .to_return(
           :status => 200, 
@@ -30,7 +32,7 @@ class ElibomTest < Test::Unit::TestCase
           :headers => {})
 
     elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
-    response = elibom.send_message(:destinations => '573002111111', :text => 'this is a test')
+    response = elibom.send_message(:to => '573002111111', :text => 'this is a test')
     assert_equal response["deliveryToken"], "23345"
   end
 
@@ -48,6 +50,21 @@ class ElibomTest < Test::Unit::TestCase
     end
   end
 
+  def test_schedule_message
+    stub_request(:post, "#{HOST_WITH_CREDENTIALS}/messages")
+        .with(
+          :body => "{\"to\":\"573002111111\",\"text\":\"this is a test\",\"scheduleDate\":\"2014-02-18 20:30\"}",
+          :headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
+        .to_return(
+          :status => 200, 
+          :body => "{\"scheduleId\": \"23345\"}", 
+          :headers => {})
+
+    elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
+    response = elibom.schedule_message(:to => '573002111111', :text => 'this is a test', :schedule_date => DateTime.parse('2014-02-18 20:30'))
+    assert_equal response["scheduleId"], "23345"
+  end
+
   def test_messages
     delivery = {
       "deliveryId"=>"12345",
@@ -56,7 +73,7 @@ class ElibomTest < Test::Unit::TestCase
       "numFailed"=>0,
       "messages"=>[{
         "id"=>171851,
-        "user"=>{"id"=>2, "url"=>"http://localhost:9090/users/2"},
+        "user"=>{"id"=>2, "url"=>"https://www.elibom.com:9090/users/2"},
         "to"=>"573002175604",
         "operator"=>"Tigo (Colombia)",
         "text"=>"this is a test",
@@ -68,7 +85,7 @@ class ElibomTest < Test::Unit::TestCase
         "sentAt"=>"2013-07-24 15:05:34"}]
     }
 
-    stub_request(:get, "http://t%40u.com:test@www.elibom.com/messages/12345")
+    stub_request(:get, "#{HOST_WITH_CREDENTIALS}/messages/12345")
         .with(
           :headers => {'Accept'=>'application/json'})
         .to_return(
@@ -78,23 +95,7 @@ class ElibomTest < Test::Unit::TestCase
 
     elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
     response = elibom.messages('12345')
-    assert_equal response["deliveryId"], "12345"
-    assert_equal response["status"], "finished"
-    assert_equal response["numSent"], 1
-    assert_equal response["numFailed"], 0
-    assert_equal response["messages"].length, 1
-
-    message = response["messages"][0]
-    assert_equal message["id"], 171851
-    assert_equal message["user"]["id"], 2
-    assert_equal message["operator"], "Tigo (Colombia)"
-    assert_equal message["text"], "this is a test"
-    assert_equal message["status"], "sent"
-    assert_equal message["statusDetail"], "sent"
-    assert_equal message["credits"], 1
-    assert_equal message["from"], "3542"
-    assert_equal message["createdAt"], "2013-07-24 15:05:34"
-    assert_equal message["sentAt"], "2013-07-24 15:05:34"
+    assert_equal response, delivery
   end
 
   def test_messages_nil_delivery_id
@@ -111,5 +112,154 @@ class ElibomTest < Test::Unit::TestCase
     end
   end
 
-  # TODO - tests for user and account
+  def test_schedules
+    schedules = [{
+      "id" => 32,
+      "user" => {
+        "id" => 45,
+        "url" => "https://www.elibom.com/users/45"
+      },
+      "scheduledTime" => "2014-05-23 10:23:00",
+      "creationTime" => "2012-09-23 22:00:00",
+      "status" => "scheduled",
+      "isFile" => true,
+      "fileName" => "test.xls",
+      "fileHasText" => false,
+      "text" => "Prueba"
+    }]
+
+    stub_request(:get, "#{HOST_WITH_CREDENTIALS}/schedules/scheduled")
+        .with(
+          :headers => {'Accept'=>'application/json'})
+        .to_return(
+          :status => 200,
+          :body => schedules.to_json,
+          :headers => {})
+
+    elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
+    response = elibom.schedules
+    assert_equal response, schedules
+  end
+
+  def test_show_schedule
+    schedule = {
+      "id" => 32,
+      "user" => {
+        "id" => 45,
+        "url" => "https://www.elibom.com/users/45"
+      },
+      "scheduledTime" => "2014-05-23 10:23:00",
+      "creationTime" => "2012-09-23 22:00:00",
+      "status" => "scheduled",
+      "isFile" => true,
+      "fileName" => "test.xls",
+      "fileHasText" => false,
+      "text" => "Prueba"
+    }
+
+    stub_request(:get, "#{HOST_WITH_CREDENTIALS}/schedules/32")
+        .with(
+          :headers => {'Accept'=>'application/json'})
+        .to_return(
+          :status => 200,
+          :body => schedule.to_json,
+          :headers => {})
+
+    elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
+    response = elibom.show_schedule(32)
+    assert_equal response, schedule
+  end
+
+  def test_show_schedule_nil_id
+    elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
+    assert_raise ArgumentError do
+      elibom.show_schedule(nil)
+    end
+  end
+
+  def test_cancel_schedule
+    stub_request(:delete, "#{HOST_WITH_CREDENTIALS}/schedules/32")
+        .to_return(
+          :status => 200,
+          :body => "",
+          :headers => {})
+
+    elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
+    elibom.unschedule(32)
+  end
+
+  def test_users
+    users = [{
+      "id" => "1",
+      "name" => "Usuario 1",
+      "email" => "usuario1@tudominio.com",
+      "status" => "active" 
+    }]
+
+    stub_request(:get, "#{HOST_WITH_CREDENTIALS}/users")
+        .with(
+          :headers => {'Accept'=>'application/json'})
+        .to_return(
+          :status => 200,
+          :body => users.to_json,
+          :headers => {})
+
+    elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
+    response = elibom.users
+
+    assert_equal response, users
+  end
+
+  def test_show_user
+    user = {
+      "id" => "1",
+      "name" => "Usuario 1",
+      "email" => "usuario1@tudominio.com",
+      "status" => "active" 
+    }
+
+    stub_request(:get, "#{HOST_WITH_CREDENTIALS}/users/1")
+        .with(
+          :headers => {'Accept'=>'application/json'})
+        .to_return(
+          :status => 200,
+          :body => user.to_json,
+          :headers => {})
+
+    elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
+    response = elibom.show_user(1)
+
+    assert_equal response, user
+  end
+
+  def test_show_user_nil_user_id
+    elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
+    assert_raise ArgumentError do
+      elibom.user(nil)
+    end
+  end
+
+  def test_show_account
+    account = {
+      "name" => "Nombre",
+      "credits" => 10.0,
+      "owner" => {
+        "id" => 1,
+        "url" => "https://www.elibom.com/users/1"
+      }
+    }
+
+    stub_request(:get, "#{HOST_WITH_CREDENTIALS}/account")
+        .with(
+          :headers => {'Accept'=>'application/json'})
+        .to_return(
+          :status => 200,
+          :body => account.to_json,
+          :headers => {})
+
+    elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
+    response = elibom.show_account
+
+    assert_equal response, account
+  end
 end

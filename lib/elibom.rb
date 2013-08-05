@@ -27,6 +27,7 @@ module Elibom
 
       post '/messages', body
     end
+    alias :send :send_message
 
     def schedule_message(args={})
       body = {}
@@ -41,10 +42,10 @@ module Elibom
       raise ArgumentError, "Invalid argument ':schedule_date'" unless args[:schedule_date].respond_to?('strftime')
 
       body['scheduleDate'] =  args[:schedule_date].strftime('%Y-%m-%d %H:%M')
-      puts body
 
       post '/messages', body
     end
+    alias :schedule :schedule_message
 
     def messages(delivery_id)
       raise ArgumentError, "'delivery_id' cannot be nil or empty" if delivery_id.nil? || delivery_id.empty?
@@ -59,7 +60,7 @@ module Elibom
     alias :schedules :scheduled
     alias :list_schedules :scheduled
 
-    def schedule(schedule_id)
+    def show_schedule(schedule_id)
       raise ArgumentError, "'schedule_id' cannot be nil" if schedule_id.nil?
       get "/schedules/#{schedule_id}"
     end
@@ -74,14 +75,16 @@ module Elibom
       get "/users"
     end
 
-    def user(user_id)
+    def show_user(user_id)
       raise ArgumentError, "'user_id' cannot be nil" if user_id.nil?
       get "/users/#{user_id}"
     end
+    alias :user :show_user
 
-    def account
+    def show_account
       get '/account'
     end
+    alias :account :show_account
 
     private
 
