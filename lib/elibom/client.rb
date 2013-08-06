@@ -71,6 +71,7 @@ module Elibom
     def users
       get "/users"
     end
+    alias :list_users :users
 
     def show_user(user_id)
       raise ArgumentError, "'user_id' cannot be nil" if user_id.nil?
@@ -138,7 +139,7 @@ module Elibom
             response.error!
         end
       end
-      
+
   end
 
 end
