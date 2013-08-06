@@ -12,13 +12,13 @@ A ruby client of the Elibom REST API. [The full API reference is here](http://ww
 gem install elibom
 ```
 
-2\. Create an `Elibom::Client` object passing your credentials.
+2\. Configure the `Elibom` object passing your credentials.
 
 ```ruby
 require 'rubygems' # only if using ruby <= 1.8
 require 'elibom'
 
-elibom = Elibom::Client.new(
+Elibom.configure(
   :user => 'your@user.com', 
   :api_password => 'your_api_password'
 )
@@ -41,7 +41,7 @@ You are now ready to start calling the API methods!
 
 ### Send SMS
 ```ruby
-response = elibom.send_message(
+response = Elibom.send_message(
   :to => '51965876567, 573002111111', 
   :text => 'this is a test'
 )
@@ -50,7 +50,7 @@ puts response["deliveryToken"] # all methods return a hash (or nil if there is n
 
 ### Schedule SMS 
 ```ruby
-response = elibom.schedule_message(
+response = Elibom.schedule_message(
   :to => '51965876567, 573002111111', 
   :text => 'this is a test',
   :schedule_date => Time.now + 3600 # in an hour
@@ -60,41 +60,41 @@ puts response["scheduleId"]
 
 ### List SMS Messages
 ```ruby
-response = elibom.list_messages('<delivery_token>')
+response = Elibom.list_messages('<delivery_token>')
 puts response
 ```
 
 ### List Scheduled SMS Messages
 ```ruby
-response = elibom.list_schedules
+response = Elibom.list_schedules
 puts response
 ```
 
 ### Show Scheduled SMS Message
 ```ruby
-response = elibom.show_schedule(<schedule_id>)
+response = Elibom.show_schedule(<schedule_id>)
 puts response
 ```
 
 ### Cancel Scheduled SMS Message
 ```ruby
-elibom.unschedule(<schedule_id>)
+Elibom.unschedule(<schedule_id>)
 ```
 
 ### List Users
 ```ruby
-response = elibom.list_users
+response = Elibom.list_users
 puts response
 ```
 
 ### Show User
 ```ruby
-response = elibom.show_user(<user_id>)
+response = Elibom.show_user(<user_id>)
 puts response
 ```
 
 ### Show Account
 ```ruby
-response = elibom.show_account
+response = Elibom.show_account
 puts response
 ```
