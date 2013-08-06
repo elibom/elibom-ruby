@@ -15,6 +15,7 @@ gem install elibom
 2\. Create an `Elibom::Client` object passing your credentials.
 
 ```ruby
+require 'rubygems' # only if using ruby <= 1.8
 require 'elibom'
 
 elibom = Elibom::Client.new(
@@ -59,19 +60,19 @@ puts response["scheduleId"]
 
 ### List SMS Messages
 ```ruby
-response = elibom.messages('<delivery_token>')
+response = elibom.list_messages('<delivery_token>')
 puts response
 ```
 
 ### List Scheduled SMS Messages
 ```ruby
-response = elibom.schedules
+response = elibom.list_schedules
 puts response
 ```
 
 ### Show Scheduled SMS Message
 ```ruby
-response = elibom.schedule(<schedule_id>)
+response = elibom.show_schedule(<schedule_id>)
 puts response
 ```
 
@@ -82,18 +83,18 @@ elibom.unschedule(<schedule_id>)
 
 ### List Users
 ```ruby
-response = elibom.users
+response = elibom.list_users
 puts response
 ```
 
 ### Show User
 ```ruby
-response = elibom.user(<user_id>)
+response = elibom.show_user(<user_id>)
 puts response
 ```
 
 ### Show Account
 ```ruby
-response = elibom.account
+response = elibom.show_account
 puts response
 ```
