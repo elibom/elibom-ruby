@@ -16,51 +16,43 @@ module Elibom
     end
 
     def send_message(args={})
-      body = {}
+      raise ArgumentError, "No args provided" if args.nil?
+      raise ArgumentError, "Missing key ':to'" if args[:to].nil?
+      raise ArgumentError, "Missing key ':text'" if args[:text].nil?
+      raise ArgumentError, "Text is too long, max 160 characters" if args[:text].length > 160
 
-      required_args = [:to, :text]
-      required_args.each do |arg|
-        raise ArgumentError, "Missing key ':#{arg}'" if args[arg].nil?
-        body[arg] = args[arg]
-      end
-
+      body = { "to" => args[:to], "text" => args[:text] }
       post '/messages', body
     end
 
     def schedule_message(args={})
-      body = {}
-
-      required_args = [:to, :text]
-      required_args.each do |arg|
-        raise ArgumentError, "Missing key ':#{arg}'" if args[arg].nil?
-        body[arg] = args[arg]
-      end
-
+      raise ArgumentError, "No args provided" if args.nil?
+      raise ArgumentError, "Missing key ':to'" if args[:to].nil?
+      raise ArgumentError, "Missing key ':text'" if args[:text].nil?
+      raise ArgumentError, "Invalid argument ':text'. Too long, max 160 characters" if args[:text].length > 160
       raise ArgumentError, "Missing key ':schedule_date'" if args[:schedule_date].nil?
       raise ArgumentError, "Invalid argument ':schedule_date'" unless args[:schedule_date].respond_to?('strftime')
 
-      body['scheduleDate'] =  args[:schedule_date].strftime('%Y-%m-%d %H:%M')
-
+      body = { "to" => args[:to], "text" => args[:text], "scheduleDate" => args[:schedule_date].strftime('%Y-%m-%d %H:%M') }
       post '/messages', body
     end
 
-    def messages(delivery_id)
+    def show_delivery(delivery_id)
       raise ArgumentError, "'delivery_id' cannot be nil or empty" if delivery_id.nil? || delivery_id.empty?
       get "/messages/#{delivery_id}"
     end
-    alias :list_messages :messages
+    alias :delivery :show_delivery
 
-    def scheduled
+    def scheduled_messages
       get "/schedules/scheduled"
     end
-    alias :list_scheduled_messages :scheduled
-    alias :schedules :scheduled
-    alias :list_schedules :scheduled
+    alias :list_scheduled_messages :scheduled_messages
 
-    def show_schedule(schedule_id)
+    def show_scheduled_message(schedule_id)
       raise ArgumentError, "'schedule_id' cannot be nil" if schedule_id.nil?
       get "/schedules/#{schedule_id}"
     end
+    alias :scheduled_message :show_scheduled_message
 
     def cancel_schedule(schedule_id)
       raise ArgumentError, "'schedule_id' cannot be nil" if schedule_id.nil?

@@ -35,17 +35,24 @@ class ClientTest < Test::Unit::TestCase
     assert_equal response["deliveryToken"], "23345"
   end
 
+  def test_send_message_long_text
+    elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
+    assert_raise ArgumentError do
+      elibom.send_message(:to => '573002111111', :text => 'a' * 161)
+    end
+  end
+
   def test_send_message_missing_destinations
     elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
     assert_raise ArgumentError do
-      response = elibom.send_message(:text => 'this is a test')
+      elibom.send_message(:text => 'this is a test')
     end
   end
 
   def test_send_message_missing_text
     elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
     assert_raise ArgumentError do
-      response = elibom.send_message(:destinations => '573002111111')
+      elibom.send_message(:destinations => '573002111111')
     end
   end
 
@@ -64,7 +71,14 @@ class ClientTest < Test::Unit::TestCase
     assert_equal response["scheduleId"], "23345"
   end
 
-  def test_messages
+  def test_schedule_message_long_text
+    elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
+    assert_raise ArgumentError do
+      elibom.schedule_message(:to => '573002111111', :text => 'a' * 161, :schedule_date => DateTime.parse('2014-02-18 20:30'))
+    end
+  end
+
+  def test_show_delivery
     delivery = {
       "deliveryId"=>"12345",
       "status"=>"finished",
@@ -93,25 +107,25 @@ class ClientTest < Test::Unit::TestCase
           :headers => {})
 
     elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
-    response = elibom.messages('12345')
+    response = elibom.delivery('12345')
     assert_equal response, delivery
   end
 
   def test_messages_nil_delivery_id
     elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
     assert_raise ArgumentError do
-      elibom.messages(nil)
+      elibom.delivery(nil)
     end
   end
 
   def test_messages_empty_delivery_id
     elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
     assert_raise ArgumentError do
-      elibom.messages('')
+      elibom.delivery('')
     end
   end
 
-  def test_schedules
+  def test_scheduled_messages
     schedules = [{
       "id" => 32,
       "user" => {
@@ -136,11 +150,11 @@ class ClientTest < Test::Unit::TestCase
           :headers => {})
 
     elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
-    response = elibom.schedules
+    response = elibom.scheduled_messages
     assert_equal response, schedules
   end
 
-  def test_show_schedule
+  def test_show_scheduled_message
     schedule = {
       "id" => 32,
       "user" => {
@@ -165,14 +179,14 @@ class ClientTest < Test::Unit::TestCase
           :headers => {})
 
     elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
-    response = elibom.show_schedule(32)
+    response = elibom.scheduled_message(32)
     assert_equal response, schedule
   end
 
   def test_show_schedule_nil_id
     elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
     assert_raise ArgumentError do
-      elibom.show_schedule(nil)
+      elibom.scheduled_message(nil)
     end
   end
 

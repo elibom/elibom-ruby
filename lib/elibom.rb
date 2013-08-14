@@ -1,4 +1,4 @@
-require File.expand_path('elibom/client', File.dirname(__FILE__))
+require File.expand_path('elibom/client.rb', File.dirname(__FILE__))
 
 # Ruby client of the Elibom API
 module Elibom
