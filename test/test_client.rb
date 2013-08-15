@@ -134,7 +134,6 @@ class ClientTest < Test::Unit::TestCase
       },
       "scheduledTime" => "2014-05-23 10:23:00",
       "creationTime" => "2012-09-23 22:00:00",
-      "status" => "scheduled",
       "isFile" => true,
       "fileName" => "test.xls",
       "fileHasText" => false,
