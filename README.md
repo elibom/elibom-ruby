@@ -31,7 +31,7 @@ You are now ready to start calling the API methods!
 
 * [Send SMS](#send-sms)
 * [Schedule SMS](#schedule-sms)
-* [List SMS Messages](#list-sms-message)
+* [Show Delivery](#show-delivery)
 * [List Scheduled SMS Messages](#list-scheduled-sms-messages)
 * [Show Scheduled SMS Message](#show-scheduled-sms-message)
 * [Cancel Scheduled SMS Message](#cancel-scheduled-sms-message)
@@ -58,21 +58,21 @@ response = Elibom.schedule_message(
 puts response["scheduleId"]
 ```
 
-### List SMS Messages
+### Show Delivery
 ```ruby
-response = Elibom.list_messages('<delivery_token>')
+response = Elibom.delivery('<delivery_token>')
 puts response
 ```
 
 ### List Scheduled SMS Messages
 ```ruby
-response = Elibom.list_schedules
+response = Elibom.scheduled_messages
 puts response
 ```
 
 ### Show Scheduled SMS Message
 ```ruby
-response = Elibom.show_schedule(<schedule_id>)
+response = Elibom.scheduled_message(<schedule_id>)
 puts response
 ```
 
@@ -83,18 +83,18 @@ Elibom.unschedule(<schedule_id>)
 
 ### List Users
 ```ruby
-response = Elibom.list_users
+response = Elibom.users
 puts response
 ```
 
 ### Show User
 ```ruby
-response = Elibom.show_user(<user_id>)
+response = Elibom.user(<user_id>)
 puts response
 ```
 
 ### Show Account
 ```ruby
-response = Elibom.show_account
+response = Elibom.account
 puts response
 ```
