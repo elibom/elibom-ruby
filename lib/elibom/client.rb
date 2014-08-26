@@ -85,6 +85,7 @@ module Elibom
         request = Net::HTTP::Get.new(uri.request_uri)
         request.basic_auth @user, @api_password
         request['Accept'] = 'application/json'
+        request['X-API-Source'] = "ruby-#$elibom_version"
 
         response = http.request(request)
         parse_json_response(response)
@@ -98,7 +99,9 @@ module Elibom
         request.basic_auth @user, @api_password
         request['Content-Type'] = 'application/json'
         request['Accept'] = 'application/json'
+        request['X-API-Source'] = "ruby-#$elibom_version"
         request.body = body.to_json
+        puts request['X-API-Source']
 
         response = http.request(request)
         parse_json_response(response)
@@ -109,6 +112,7 @@ module Elibom
         http = get_http(uri)
 
         request = Net::HTTP::Delete.new(uri.path)
+        request['X-API-Source'] = "ruby-#$elibom_version"
         request.basic_auth @user, @api_password
         
         http.request(request)
