@@ -101,7 +101,6 @@ module Elibom
         request['Accept'] = 'application/json'
         request['X-API-Source'] = "ruby-#$elibom_version"
         request.body = body.to_json
-        puts request['X-API-Source']
 
         response = http.request(request)
         parse_json_response(response)
