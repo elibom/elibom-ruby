@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'elibom'
-  s.version     = '0.6.1'
-  s.date        = '2013-08-26'
+  s.version     = '0.7.0'
+  s.date        = '2016-03-08'
   s.summary     = "Elibom API client"
   s.description = "A client of the Elibom API"
   s.authors     = [ "German Escobar", "Carlos Sepulveda"]

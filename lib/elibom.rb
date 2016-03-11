@@ -3,7 +3,7 @@ require File.expand_path('elibom/client.rb', File.dirname(__FILE__))
 # Ruby client of the Elibom API
 module Elibom
 
-  $elibom_version = "0.6.1"
+  $elibom_version = "0.7.0"
 
   class << self
     def configure(options={})
