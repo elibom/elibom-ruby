@@ -35,6 +35,21 @@ class ClientTest < Test::Unit::TestCase
     assert_equal response["deliveryToken"], "23345"
   end
 
+  def test_send_message_with_campaign
+    stub_request(:post, "#{HOST_WITH_CREDENTIALS}/messages")
+        .with(
+          :body => "{\"to\":\"573002111111\",\"text\":\"this is a test\",\"campaign\":\"campaign\"}",
+          :headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
+        .to_return(
+          :status => 200, 
+          :body => "{\"deliveryToken\": \"23345\"}", 
+          :headers => {})
+
+    elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
+    response = elibom.send_message(:to => '573002111111', :text => 'this is a test', :campaign => 'campaign')
+    assert_equal response["deliveryToken"], "23345"
+  end
+
   def test_send_message_long_text
     elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
     assert_raise ArgumentError do
@@ -68,6 +83,21 @@ class ClientTest < Test::Unit::TestCase
 
     elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
     response = elibom.schedule_message(:to => '573002111111', :text => 'this is a test', :schedule_date => DateTime.parse('2014-02-18 20:30'))
+    assert_equal response["scheduleId"], "23345"
+  end
+
+  def test_schedule_message_with_campaign
+    stub_request(:post, "#{HOST_WITH_CREDENTIALS}/messages")
+        .with(
+          :body => "{\"to\":\"573002111111\",\"text\":\"this is a test\",\"scheduleDate\":\"2014-02-18 20:30\",\"campaign\":\"campaign\"}",
+          :headers => {'Accept'=>'application/json', 'Content-Type'=>'application/json'})
+        .to_return(
+          :status => 200, 
+          :body => "{\"scheduleId\": \"23345\"}", 
+          :headers => {})
+
+    elibom = Elibom::Client.new(:user => 't@u.com', :api_password => 'test')
+    response = elibom.schedule_message(:to => '573002111111', :text => 'this is a test', :schedule_date => DateTime.parse('2014-02-18 20:30'), :campaign => 'campaign')
     assert_equal response["scheduleId"], "23345"
   end
 

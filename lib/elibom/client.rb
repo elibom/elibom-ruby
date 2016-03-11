@@ -22,6 +22,10 @@ module Elibom
       raise ArgumentError, "Text is too long, max 160 characters" if args[:text].length > 160
 
       body = { "to" => args[:to], "text" => args[:text] }
+      if !args[:campaign].nil? then
+        body["campaign"] = args[:campaign]
+      end
+
       post '/messages', body
     end
 
@@ -34,6 +38,10 @@ module Elibom
       raise ArgumentError, "Invalid argument ':schedule_date'" unless args[:schedule_date].respond_to?('strftime')
 
       body = { "to" => args[:to], "text" => args[:text], "scheduleDate" => args[:schedule_date].strftime('%Y-%m-%d %H:%M') }
+      if !args[:campaign].nil? then
+        body["campaign"] = args[:campaign]
+      end
+
       post '/messages', body
     end
 
